@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>IYH Poster · กำลังเชื่อม</title>
+<style>body{margin:0;background:#0f0f10;color:#f4f4f4;font-family:system-ui,"Noto Sans Thai",sans-serif;display:grid;place-items:center;min-height:100vh;text-align:center;padding:16px}</style>
+</head>
+<body>
+<p>กำลังส่งการอนุญาตกลับไปที่คอมของช่อง… ถ้าค้างหน้านี้ ปิดได้เลย</p>
+<script>
+// Facebook redirects here after the owner approves IYH Poster; forward the one-time code to the poster
+// running on the channel's own computer (localhost). Nothing is stored or sent anywhere else.
+location.replace('http://localhost:8765/callback' + location.search);
+</script>
+</body>
+</html>
