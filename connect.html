@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>IYH Poster · Connect</title>
+<style>body{margin:0;background:#0f0f10;color:#f4f4f4;font:20px system-ui,"Noto Sans Thai",sans-serif;text-align:center;padding:60px 16px}
+a.btn{display:inline-block;background:#fe2c55;color:#fff;border-radius:10px;padding:16px 34px;font-size:22px;text-decoration:none;margin-top:24px}
+p{color:#aaa}</style>
+</head>
+<body>
+<h1>IYH Poster</h1>
+<p>Internal tool of the In Your Head channel · posts our own clips to our own TikTok account</p>
+<a class="btn" id="go" href="#">Connect TikTok</a>
+<p style="font-size:15px;margin-top:40px"><a href="privacy.html" style="color:#aaa">Privacy Policy</a> · <a href="terms.html" style="color:#aaa">Terms</a></p>
+<script>
+const q = new URLSearchParams({client_key: "sbawgdba9hbal3mqtx", scope: "user.info.basic,video.upload,video.publish",
+  response_type: "code", redirect_uri: "https://inyourheadclub.github.io/tiktok-callback.html", state: "iyh"});
+document.getElementById("go").href = "https://www.tiktok.com/v2/auth/authorize/?" + q;
+</script>
+</body>
+</html>
