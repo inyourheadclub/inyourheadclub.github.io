@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="th"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>เช็กไข่ซอมบี้</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--red:#961C24;--yel:#FFD400;--ink:#1d1414;--bg:#faf6f4;--card:#fff;--mute:#7a6d6b;--line:#eadfdc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Mitr,system-ui,sans-serif;font-weight:400}
+header{background:var(--red);color:#fff;padding:22px 16px 26px;text-align:center}
+header h1{margin:6px 0 4px;font-size:30px;font-weight:600}header p{margin:0;opacity:.9}
+.egg{display:inline-block;width:34px;height:44px;background:var(--yel);border:3px solid var(--ink);border-radius:50% 50% 46% 46%/58% 58% 42% 42%;vertical-align:middle}
+main{max-width:640px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats b{display:block;font-size:26px;color:var(--red);font-weight:600}.stats span{font-size:13px;color:var(--mute)}
+select,input{font:inherit;width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:12px;background:#fff}
+.row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.row .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row .c{font-size:12px;color:var(--mute)}
+.row .e{font-weight:600;color:var(--red);white-space:nowrap}.pf{font-size:11px;border-radius:6px;padding:2px 6px;background:#f2e7e5}
+.win{border:3px solid var(--yel);background:#fffbe6}.win h2{margin:0 0 8px;font-size:20px}
+h2{font-size:18px;margin:0 0 10px;font-weight:600}.mute{color:var(--mute);font-size:13px}code{font-size:12px;word-break:break-all}
+.btn{display:block;text-align:center;background:var(--red);color:#fff;text-decoration:none;padding:12px;border-radius:12px;font-weight:500}
+</style></head><body>
+<header><span class="egg"></span><h1>เช็กไข่ซอมบี้</h1><p>เม้นความประทับใจ 1 คลิป = 1 ไข่ · ลุ้นของรางวัลทุกสิ้นเดือน</p></header>
+<main>
+ <div class="card"><select id="round"></select><p class="mute" id="when"></p>
+  <div class="stats"><div><b id="sPeople">-</b><span>คนร่วมสนุก</span></div><div><b id="sEggs">-</b><span>ไข่ในตะกร้า</span></div><div><b id="sDays">-</b><span>วันก่อนปิดรอบ</span></div></div></div>
+ <div class="card win" id="result" hidden></div>
+ <div class="card"><h2>ค้นชื่อบัญชีของคุณ</h2><input id="q" placeholder="พิมพ์ชื่อบัญชี หรือรหัส 5 ตัว" autocomplete="off"><div id="list" style="margin-top:8px"></div><p class="mute" id="more"></p></div>
+ <div class="card" id="lock" hidden></div>
+ <div class="card"><h2>ได้ไข่ยังไง</h2>
+  <p>• เม้น <b>ความประทับใจ</b> ใต้คลิปไหนก็ได้ของ In Your Head = 1 ไข่ (1 คลิป 1 ไข่ต่อบัญชี)<br>• YouTube / Facebook นับให้เอง · TikTok / IG แคปคอมเมนต์ส่ง LINE OA พิมพ์ <b>"ส่งไข่"</b><br>• ฟรี ไม่ต้องซื้ออะไร · เม้นแค่ "A" / อีโมจิ ไม่นับ</p>
+  <a class="btn" id="lineBtn" href="https://lin.ee/5fIVjDN">LINE OA In Your Head</a>
+  <p class="mute">กิจกรรมนี้ไม่ได้รับการสนับสนุนหรือดำเนินการโดย YouTube, Meta หรือ TikTok · ชื่อแสดงแค่ 3 ตัวแรก</p></div>
+</main>
+<script>
+const PF = {yt: 'YouTube', fb: 'Facebook', tiktok: 'TikTok', ig: 'IG'};
+const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const mask = s => { s = s.trim().replace(/^@/, ''); let o = '', n = 0; for (const c of s) { const m = /\p{M}/u.test(c); if (m || n < 3) { o += c; if (!m) n++; } else break; } return o; };
+let D, R;
+function render() {
+  R = D.rounds[$('round').value]; const [a, b] = R.window.map(x => new Date(x)), now = new Date();
+  $('when').textContent = `รอบ ${a.toLocaleDateString('th-TH', {day: 'numeric', month: 'short'})} – ${new Date(b - 1).toLocaleDateString('th-TH', {day: 'numeric', month: 'short', year: 'numeric'})} · อัปเดต ${new Date(R.updated).toLocaleString('th-TH', {dateStyle: 'medium', timeStyle: 'short'})}`;
+  $('sPeople').textContent = R.people.length; $('sEggs').textContent = R.total; $('sDays').textContent = Math.max(0, Math.ceil((b - now) / 864e5));
+  const r = R.result; $('result').hidden = !r;
+  if (r) $('result').innerHTML = `<h2>🏆 ผู้ชนะรอบนี้ (${esc(r.mode)}${r.lotto ? ' · เลขสลาก ' + esc(r.lotto) : ''})</h2>` + r.winners.map(w => `<div class="row"><span class="e">#${w.rank}</span><span class="n">${esc(w.n)} <span class="pf">${PF[w.p] || w.p}</span><br><span class="c">รหัส ${w.c}</span></span><span class="c">${esc(w.prize || '')}</span></div>`).join('') + '<p class="mute">ผู้ชนะทัก LINE OA ภายใน 7 วัน</p>';
+  $('lock').hidden = !R.lock;
+  if (R.lock) $('lock').innerHTML = `<h2>🔒 ล็อกรายชื่อแล้ว</h2><p class="mute">ลายนิ้วมือ SHA-256 (ประกาศก่อนวันสุ่ม · รายชื่อเปลี่ยนแม้ตัวเดียว ลายนิ้วมือจะเปลี่ยนทั้งหมด)</p><code>${R.lock.sha256}</code>`;
+  list();
+}
+function list() {
+  const q = $('q').value.trim(), qm = mask(q).toLowerCase(), qc = q.toUpperCase();
+  const hit = !q ? R.people : R.people.filter(p => p.c === qc || p.n.toLowerCase().replace('•••', '').startsWith(qm) || (q.length < 3 && p.n.toLowerCase().includes(q.toLowerCase())));
+  const show = hit.slice(0, q ? 50 : 20);
+  $('list').innerHTML = show.length ? show.map((p, i) => `<div class="row"><span class="c">${q ? '' : i + 1}</span><span class="n">${esc(p.n)} <span class="pf">${PF[p.p] || p.p}</span><br><span class="c">รหัส ${p.c}</span></span><span class="e">${'🥚'.repeat(Math.min(p.e, 5))}${p.e > 5 ? ' ×' + p.e : ''}</span></div>`).join('')
+    : `<p class="mute">${q ? 'ยังไม่เจอ ลองพิมพ์ 3 ตัวแรกของชื่อบัญชี (อัปเดตทุกคืน)' : 'ยังไม่มีไข่ในรอบนี้ เป็นคนแรกเลย!'}</p>`;
+  $('more').textContent = !q && hit.length > 20 ? `แสดง 20 อันดับแรกจาก ${hit.length} คน · พิมพ์ชื่อเพื่อค้น` : '';
+}
+async function boot() {
+  try { D = window.EGGS || await (await fetch('eggs.json', {cache: 'no-store'})).json(); }
+  catch (e) { $('list').innerHTML = '<p class="mute">โหลดข้อมูลไม่ได้ ลองใหม่อีกครั้ง</p>'; return; }
+  $('round').innerHTML = Object.keys(D.rounds).sort().reverse().map(m => `<option value="${m}">รอบ ${new Date(m + '-01').toLocaleDateString('th-TH', {month: 'long', year: 'numeric'})}</option>`).join('');
+  $('round').value = D.latest; $('round').onchange = render; $('q').oninput = list; render();
+}
+boot();
+</script></body></html>
